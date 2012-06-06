@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/back2">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical" android:layout_height="fill_parent"
+		android:layout_width="fill_parent">
+
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="fill_parent" android:layout_height="45dip"
+			android:orientation="horizontal" android:paddingLeft="10dip"
+			android:paddingRight="10dip"
+			android:background="#6d6e71">
+
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="fill_parent" android:orientation="horizontal"
+				android:layout_weight="1">
+				<TextView android:id="@+id/menu_principal_titulo"
+					android:text="DPEC" android:layout_width="fill_parent"
+					android:layout_height="fill_parent" android:textSize="20sp"					
+					android:paddingLeft="10dip" android:textColor="#f5f5f5"
+					android:gravity="center|left">
+				</TextView>
+			</LinearLayout>
+			<LinearLayout android:layout_height="fill_parent"
+		  		android:layout_weight="6" android:layout_width="match_parent">
+		      	<Button android:id="@+id/menu_principal_preferencias"
+		      		android:layout_width="25dip"
+		      		android:layout_height="25dip"
+		      		android:visibility="visible"		      		
+		      		android:layout_margin="10dip"
+		      		android:layout_gravity="center"		      		
+		      		android:background="@drawable/preferencias">
+		      </Button>
+		   </LinearLayout>
+		</LinearLayout>
+
+		<ListView android:id="@+id/BrowsingList"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:layout_marginTop="18dip"
+			android:layout_marginLeft="10dip"
+			android:layout_marginRight="10dip"
+			android:paddingRight="10dip"
+			android:background="@drawable/customshape"
+			android:cacheColorHint="#ffffff" />
+			
+	</LinearLayout>
+
+	<Button android:id="@+id/button2" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_alignParentBottom="true"
+		android:background="@drawable/logo2" />
+	
+
+</RelativeLayout>

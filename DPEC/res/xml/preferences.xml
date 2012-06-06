@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  	<PreferenceCategory
+		android:title="Tamaño">
+		<EditTextPreference		
+			android:key="matrixSize"
+	        android:title="Tamaño de la matriz"
+	        android:summary=""
+	        android:dialogTitle="Tamaño de la matriz:"
+	        android:dialogMessage="Establece el valor de N (NxN)"   
+	        android:defaultValue=""
+	        android:numeric="integer|decimal"
+	        android:maxLength="8"
+	         />
+	</PreferenceCategory>
+    
+	
+</PreferenceScreen>
+
+
+<!-- 
+<PreferenceCategory
+		android:title="Vales">
+		<EditTextPreference
+			android:key="nCupones"
+	        android:title="Número de vales"
+	        android:summary="Indique la cantidad de vales que desea ver"
+	        android:dialogTitle="Número de vales"
+	        android:dialogMessage="Cantidad"   
+	        android:defaultValue="" />
+	</PreferenceCategory> -->

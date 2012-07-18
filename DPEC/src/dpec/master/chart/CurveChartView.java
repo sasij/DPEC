@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Paint.FontMetrics;
 import android.os.Handler;
 import android.os.Message;
@@ -18,80 +17,40 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * 曲线图
- * @author liao
- *
- */
 public class CurveChartView extends View{
 
-    /**背景色*/
     private int backColor = Color.BLACK;
-    /**格线色*/
     private int gridColor = 0xFF339933;
-    /**曲线颜色 curve color*/
     private int[] curveColor = null;
-    
     private int defaCurveColor = Color.YELLOW;
-    
     private int textColor = 0xeeeeeeee;
-    
     private int popupColor = 0xaa33ff33;
-    
     private int selectLineColor = 0xaaaaaaaa;
-    
-    /**最小水平线的数目*/
     private int minHarizonLineCount = 3;
-    
     private int maxHarizonLineCount = 10;
-    /**是否显示选择时的数据*/
     private boolean showTips = true;
-  
     private float minValue = 0;
-    
     private float maxValue = 0;
-    
     private int maxCeil = 0;
-    
     private int minCeil = 0;
-    
     private DataQueue[] dataList = null;
- 
     private int gridPaddingLeft = 3;
-    
     private int gridPaddingRight = 3;
-    
     private int gridPaddingTop = 3;
-    
     private int gridPaddingBottom = 3;
-    
     private int gridStart = gridPaddingLeft;
-    
     private int pointGapDef = 2;
-    
     private float pointGap = pointGapDef;
-    
-    /**是否为静态曲线 curve is static*/
     private boolean isStatic = true;
     
-    private float currentMaxValue;
-    
     private float[][] staticData = null;
-  
     private float[] pointX = null;
-  
     private int selectPoint = -1;
-    
     private PointF lastPoint = null;
-    
     private boolean sizeHaveSet = false;
-    /**是否要显示刻度*/
     private boolean showCalibration = false;
-    /**刻度是否显示在左边*/
     private boolean onLeft = false;
-    
     private boolean setScope = false;
-    
     private Context context = null;
     
     public CurveChartView(Context context){
@@ -117,21 +76,11 @@ public class CurveChartView extends View{
         gridPaddingBottom = toPixel(context,gridPaddingBottom);
         pointGapDef = toPixel(context,pointGapDef);
     }
-    
-    /**
-     * 设置曲线是静态的还是动态的
-     * <br>默认为静态的
-     * @param b
-     */
+  
     public void setCurveStatic(boolean b){
         isStatic = b;
     }
-    
-    /**
-     * 设置曲线个数<br>
-     * <b>如果要画多个曲线，本方法必须是所有方法之前第一个调用的方法<b>
-     * @param c
-     */
+  
     public void setCurveCount(int c){
         if(isStatic){
             staticData = new float[c][];           
@@ -143,90 +92,50 @@ public class CurveChartView extends View{
             curveColor[i] = defaCurveColor;
         }
     }
-    
-    /**
-     * 设置数据的范围<br>
-     * 当设置了范围后，只会显示在范围之内的数据
-     * @param minv 最小的数据
-     * @param maxv 最大的数据
-     */
     public void setDataScope(int minv,int maxv){
         setScope = true;
         minCeil = minv;
         maxCeil = maxv;
     }
     
-    /**
-     * 设置刻度的显示位置<br>
-     * true在左边，false在右边
-     * @param b
-     */
+
     public void setCalibrationLeft(boolean b){
         onLeft = b;
     }
-    
-    /**
-     * 是否要显示刻度
-     * @param b
-     */
+
     public void setCalibrationOn(boolean b){
         showCalibration = b;
         gridPaddingTop = toPixel(context,10);
         gridPaddingBottom = toPixel(context,isStatic ? 10 : 25);
     }
     
-    /**
-     * 设置背景色<br>
-     * set back color
-     * @param color the back color to set
-     */
+
     public void setBackgroundColor(int color){
         backColor = color;   
     }
     
-    /**
-     * 设置格线颜色<br>
-     * set grid line color
-     * @param color
-     */
+
     public void setGridColor(int color){
         gridColor = color;
     }
-    
-    /**
-     * 设置最大的水平线条数
-     * @param c
-     */
+
     public void setMaxHarizonLineCount(int c)
     {
         maxHarizonLineCount = c;
     }
-    
-    /**
-     * 设置曲线颜色
-     * @param index 第几个曲线，从0开始
-     * @param Color
-     */
+ 
     public void setCurveColor(int index,int Color){
         if(curveColor == null || curveColor.length <= index)
             return;
         curveColor[index] = Color;
     }
-    
-    /**
-     * 设置曲线颜色
-     */
+
     public void setCurveColor(int[] color){
         if(curveColor == null || color == null || curveColor.length != color.length)
             return;
         curveColor = color;
     }
-    
-    /**
-     * 设置曲线颜色<br>
-     * 当只有一条曲线时可使用本方法
-     * @param color
-     */
+ 
     public void setCurveColor(int color){
         if((isStatic && curveColor == null) || (isStatic == false && dataList == null)){
             setCurveCount(1);
@@ -234,10 +143,7 @@ public class CurveChartView extends View{
         curveColor[0] = color;
     }
   
-    /**
-     * 设置动态曲线可显示的最大数据个数
-     * @param size
-     */
+   
     public void setMaxCount(int size){
         if(isStatic || dataList == null)
             return;
@@ -249,12 +155,7 @@ public class CurveChartView extends View{
         pointGap = (getWidth() - getPaddingLeft() - getPaddingRight()) * 1.0f / size * 1.0f;
     }
     
-    
-    /**
-     * 追加一个动态数据<br>
-     * 如果只有一个曲线，可以采用本方法。
-     * @param data
-     */
+  
     public void appendData(float data){
         if(isStatic)
             return;
@@ -284,15 +185,10 @@ public class CurveChartView extends View{
             maxCeil = (int)Math.ceil(maxValue);
             minCeil = (int)Math.floor(minValue);
         }
-        currentMaxValue = maxValue - minValue;
         invalidate();
     }
     
-    /**
-     * 追加一个动态数据<br>
-     * 本方法只在动态曲线时有效
-     * @param data
-     */
+ 
     public void appendData(float[] data){
         if(data == null || isStatic || dataList == null || dataList.length != data.length ){
             return;
@@ -322,19 +218,11 @@ public class CurveChartView extends View{
             maxCeil = (int)Math.ceil(maxValue);
             minCeil = (int)Math.floor(minValue);
         }
-        currentMaxValue = maxValue - minValue;
         invalidate();
     }
     
     
-    
-    /**
-     * 设置曲线数据<br>
-     * 本方法只在曲线为静态时有效<br>
-     * 设置数据时，应该先设置第一个曲线的数据。如果第一个曲线的数据没有设置，而直接设置后面的曲线数据，本方法会自动将此作为第一个曲线的数据。
-     * @param index 第几个曲线，从0开始
-     * @param data
-     */
+
     public void setData(int index,float[] data){
         if(data == null || isStatic == false)
             return;
@@ -355,17 +243,9 @@ public class CurveChartView extends View{
             maxCeil = (int)Math.ceil(maxValue);
             minCeil = (int)Math.floor(minValue);
         }
-        currentMaxValue = maxValue - minValue;
         pointX = null;
     }
-    
-    /**
-     * 设置曲线数据<br>
-     * 本方法只在曲线为静态时有效<br>
-     * 本方法在只有一条曲线时有效，如果在本方法之前调用setCurveCount设置的曲线数目大于1个时无效<br>
-     * 本方法不需要单独调用setCurveCount来设置曲线数目，会自动设置为1
-     * @param data
-     */
+
     public void setData(float[] data){
         if(data == null || isStatic ==false)
             return;
@@ -388,7 +268,6 @@ public class CurveChartView extends View{
             maxCeil = (int)Math.ceil(maxValue);
             minCeil = (int)Math.floor(minValue);
         }
-        currentMaxValue = maxValue - minValue;
         pointX = null;
     }
  
@@ -446,11 +325,10 @@ public class CurveChartView extends View{
         }
         
         
-        /**水平格线距离*/
         float verticalSpace = (vheight * 1.0f) / (ceilValue * 1.0f);
         gridStart = gridPaddingLeft;
         
-        //格线
+
         Paint paint = new Paint();
         paint.setColor(textColor);
         FontMetrics fm = paint.getFontMetrics();
@@ -642,7 +520,6 @@ public class CurveChartView extends View{
                     continue;
                 String txt = String.valueOf(staticData[i][selectPoint]);
                 paint.getTextBounds(txt, 0, txt.length(), bounds);  
-                RectF rf = new RectF(x - bd,y - bd,x + bounds.width() + bd,y + fms + bd);
                 //canvas.drawRoundRect(rf, 3, 3, paint);
                 p.setColor(curveColor[i]);
                 canvas.drawText(txt, x, y - fm.ascent, p);
@@ -747,11 +624,7 @@ public class CurveChartView extends View{
         private int size = 1;
         
         public DataQueue(){}
-        
-        public DataQueue(int s){
-            size = s;
-        }
-         
+    
         public void setSize(int s){
             if(s <= 1)
                 return;
@@ -770,7 +643,6 @@ public class CurveChartView extends View{
             list.add(f);
         }
         
-       
         public Float getData(int index){
             return list.get(index);
         }
@@ -778,13 +650,6 @@ public class CurveChartView extends View{
         public int getListSize(){
             return list.size();
         }
-        
-        public void removeAll(){
-            if(list.size() > 0){
-                for(int i = 0; i < list.size(); i++){
-                    list.remove();
-                }
-            }
-        }
+      
     }
 }
